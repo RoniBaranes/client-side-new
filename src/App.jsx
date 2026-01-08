@@ -9,11 +9,16 @@ import {
   Box,
   Container,
   CssBaseline,
+  IconButton,
   Tab,
   Tabs,
   Toolbar,
   Typography,
+  ThemeProvider,
+  createTheme,
 } from "@mui/material";
+import Brightness4Icon from "@mui/icons-material/Brightness4";
+import Brightness7Icon from "@mui/icons-material/Brightness7";
 
 import AddCostPage from "./pages/AddCostPage.jsx";
 import MonthlyReportPage from "./pages/MonthlyReportPage.jsx";
@@ -27,6 +32,10 @@ export default function App() {
   const [tab, setTab] = useState(0);
   const [db, setDb] = useState(null);
   const [ratesUrl, setRatesUrl] = useState("");
+  const [darkMode, setDarkMode] = useState(() => {
+    const saved = localStorage.getItem("darkMode");
+    return saved === "true";
+  });
 
   useEffect(() => {
     async function init() {
@@ -39,14 +48,37 @@ export default function App() {
     init();
   }, []);
 
+  const toggleDarkMode = () => {
+    setDarkMode((prev) => {
+      const newMode = !prev;
+      localStorage.setItem("darkMode", newMode);
+      return newMode;
+    });
+  };
+
+  const theme = useMemo(
+    () =>
+      createTheme({
+        palette: {
+          mode: darkMode ? "dark" : "light",
+        },
+      }),
+    [darkMode]
+  );
+
   const ctx = useMemo(() => ({ db, ratesUrl, setRatesUrl }), [db, ratesUrl]);
 
   return (
-    <>
+    <ThemeProvider theme={theme}>
       <CssBaseline />
       <AppBar position="static">
         <Toolbar>
-          <Typography variant="h6">Cost Manager</Typography>
+          <Typography variant="h6" sx={{ flexGrow: 1 }}>
+            Cost Manager
+          </Typography>
+          <IconButton color="inherit" onClick={toggleDarkMode}>
+            {darkMode ? <Brightness7Icon /> : <Brightness4Icon />}
+          </IconButton>
         </Toolbar>
       </AppBar>
 
@@ -74,6 +106,6 @@ export default function App() {
           </Box>
         </Box>
       </Container>
-    </>
+    </ThemeProvider>
   );
 }
