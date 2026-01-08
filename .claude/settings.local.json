@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install)",
+      "Bash(npm run build:*)",
+      "Bash(npm run dev:*)",
+      "Bash(timeout 3 bash -c 'tail -f \"\"C:\\\\Users\\\\aradl\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-aradl-Documents-GitHub-client-side-new\\\\tasks\\\\b854720.output\"\"')"
+    ]
+  }
+}

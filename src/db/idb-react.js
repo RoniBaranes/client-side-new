@@ -1,7 +1,19 @@
-import { fetchRates, convert } from "../services/currencyService.js";
+/**
+ * idb-react.js - IndexedDB wrapper for React application
+ * This module provides Promise-based API for managing costs in IndexedDB
+ * React/ES6 module version with import/export support
+ */
+
+import { fetchRates, convert } from "../services/CurrencyService.js";
 
 let _db = null;
 
+/**
+ * Internal function to open/create the IndexedDB database
+ * @param {string} databaseName - Database name
+ * @param {number} databaseVersion - Database version
+ * @returns {Promise<IDBDatabase>} Promise resolving to database instance
+ */
 function _openDbInternal(databaseName, databaseVersion) {
   return new Promise((resolve, reject) => {
     const request = indexedDB.open(databaseName, databaseVersion);
@@ -10,8 +22,12 @@ function _openDbInternal(databaseName, databaseVersion) {
       const db = event.target.result;
 
       if (!db.objectStoreNames.contains("costs")) {
-        const store = db.createObjectStore("costs", { keyPath: "id", autoIncrement: true });
+        const store = db.createObjectStore("costs", {
+          keyPath: "id",
+          autoIncrement: true
+        });
         store.createIndex("by_year_month", ["year", "month"], { unique: false });
+        store.createIndex("by_category", "category", { unique: false });
       }
     };
 
@@ -20,6 +36,12 @@ function _openDbInternal(databaseName, databaseVersion) {
   });
 }
 
+/**
+ * Opens the costs database and returns wrapper object with database methods
+ * @param {string} databaseName - Name of the database
+ * @param {number} databaseVersion - Version number
+ * @returns {Promise<Object>} Promise resolving to database wrapper with methods
+ */
 export async function openCostsDB(databaseName, databaseVersion) {
   _db = await _openDbInternal(databaseName, databaseVersion);
 
@@ -31,11 +53,21 @@ export async function openCostsDB(databaseName, databaseVersion) {
   };
 }
 
+/**
+ * Ensures database is open before operations
+ * @returns {IDBDatabase} Database instance
+ * @throws {Error} If database is not opened
+ */
 function _requireDb() {
   if (!_db) throw new Error("DB is not opened. Call openCostsDB first.");
   return _db;
 }
 
+/**
+ * Adds a new cost item to the database
+ * @param {Object} cost - Cost object with sum, currency, category, description
+ * @returns {Promise<Object>} Promise resolving to the added cost item
+ */
 export function addCost(cost) {
   const db = _requireDb();
 
@@ -73,6 +105,12 @@ export function addCost(cost) {
   });
 }
 
+/**
+ * Gets all costs for a specific year and month
+ * @param {number} year - Year
+ * @param {number} month - Month (1-12)
+ * @returns {Promise<Array>} Promise resolving to array of costs
+ */
 async function _getCostsByYearMonth(year, month) {
   const db = _requireDb();
 
@@ -87,6 +125,10 @@ async function _getCostsByYearMonth(year, month) {
   });
 }
 
+/**
+ * Gets all costs from the database
+ * @returns {Promise<Array>} Promise resolving to array of all costs
+ */
 async function _getAllCostsRaw() {
   const db = _requireDb();
 
@@ -100,6 +142,14 @@ async function _getAllCostsRaw() {
   });
 }
 
+/**
+ * Gets detailed report for a specific month and year in specified currency
+ * @param {number} year - Year
+ * @param {number} month - Month (1-12)
+ * @param {string} currency - Target currency code
+ * @param {string} ratesUrlOptional - Optional custom URL for exchange rates
+ * @returns {Promise<Object>} Promise resolving to report object
+ */
 export async function getReport(year, month, currency, ratesUrlOptional) {
   const costsRaw = await _getCostsByYearMonth(year, month);
   const rates = await fetchRates(ratesUrlOptional);
@@ -125,6 +175,14 @@ export async function getReport(year, month, currency, ratesUrlOptional) {
   };
 }
 
+/**
+ * Gets category totals for a specific month and year
+ * @param {number} year - Year
+ * @param {number} month - Month (1-12)
+ * @param {string} currency - Target currency code
+ * @param {string} ratesUrlOptional - Optional custom URL for exchange rates
+ * @returns {Promise<Object>} Promise resolving to object with category totals
+ */
 export async function getCategoryTotalsForMonth(year, month, currency, ratesUrlOptional) {
   const costs = await _getCostsByYearMonth(year, month);
   const rates = await fetchRates(ratesUrlOptional);
@@ -142,6 +200,13 @@ export async function getCategoryTotalsForMonth(year, month, currency, ratesUrlO
   return totals;
 }
 
+/**
+ * Gets yearly totals per month for bar chart
+ * @param {number} year - Year
+ * @param {string} currency - Target currency code
+ * @param {string} ratesUrlOptional - Optional custom URL for exchange rates
+ * @returns {Promise<Array>} Promise resolving to array of 12 monthly totals
+ */
 export async function getYearTotals(year, currency, ratesUrlOptional) {
   const all = await _getAllCostsRaw();
   const rates = await fetchRates(ratesUrlOptional);
