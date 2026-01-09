@@ -188,12 +188,13 @@
    * @param {number} year - The year
    * @param {number} month - The month (1-12)
    * @param {string} currency - The currency for the report
+   * @param {string} ratesUrl - Optional custom URL for exchange rates
    * @returns {Promise<Object>} Promise that resolves to report object
    */
-  function getReport(year, month, currency) {
+  function getReport(year, month, currency, ratesUrl) {
     return _getCostsByYearMonth(year, month)
       .then(function(costsRaw) {
-        return _fetchRates()
+        return _fetchRates(ratesUrl)
           .then(function(rates) {
             const convertedCosts = costsRaw.map(function(c) {
               const convertedSum = _convert(c.sum, c.currency, currency, rates);
