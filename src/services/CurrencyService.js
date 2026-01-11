@@ -9,7 +9,7 @@
  * Should return JSON in format: {"USD":1, "GBP":0.6, "EURO":0.7, "ILS":3.4}
  * You should replace this with your actual deployed JSON file URL
  */
-export const DEFAULT_RATES_URL = "https://cost-manager-sy6v.onrender.com/rates.json";
+export const DEFAULT_RATES_URL = "https://cost-manager-sy6v.onrender.com";
 /**
  * List of supported currencies in the application
  */
