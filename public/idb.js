@@ -14,7 +14,7 @@
    * This URL should return a JSON object with exchange rates
    * Format: {"USD":1, "GBP":0.6, "EURO":0.7, "ILS":3.4}
    */
-const DEFAULT_RATES_URL = 'https://cost-manager-sy6v.onrender.com';
+const DEFAULT_RATES_URL = 'https://cost-manager-project-i3wi.onrender.com/rates.json';
   /**
    * Supported currencies in the application
    */
