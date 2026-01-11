@@ -136,7 +136,7 @@ const DEFAULT_RATES_URL = 'https://cost-manager-sy6v.onrender.com';
    * @returns {Promise<Object>} Promise that resolves to rates object
    */
   function _fetchRates(userUrl) {
-    const url = (userUrl && userUrl.trim()) ? userUrl.trim() : DEFAULT_RATES_URL;
+    const url = (userUrl && userUrl.trim() !== '') ? userUrl.trim() : DEFAULT_RATES_URL;
 
     return fetch(url, { method: 'GET' })
       .then(function(response) {

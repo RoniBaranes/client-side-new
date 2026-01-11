@@ -21,7 +21,7 @@ export const SUPPORTED_CURRENCIES = ["USD", "ILS", "GBP", "EURO"];
  * @returns {Promise<Object>} Promise that resolves to rates object
  */
 export async function fetchRates(userUrl) {
-  const url = (userUrl && userUrl.trim()) ? userUrl.trim() : DEFAULT_RATES_URL;
+  const url = userUrl?.trim() || DEFAULT_RATES_URL;
 
   const res = await fetch(url, { method: "GET" });
   if (!res.ok) throw new Error("Failed to fetch exchange rates");
