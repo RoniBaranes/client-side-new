@@ -2,27 +2,38 @@
 
 A comprehensive cost management web application built with React, Material-UI, and IndexedDB.
 
+## Team
+
+- **Team Manager**: Arad Levi
+- **Team Members**: Arad Levi, Roni Baranes, Mor Sigman
+
+## Live Demo
+
+- **Application**: https://cost-manager-project-i3wi.onrender.com/
+- **Demo Video**: https://youtu.be/GiU8bvubbuQ?si=DXdEWg3gh1Npsyop
+
 ## Features
 
 - **Add Costs**: Add new cost items with amount, currency, category, and description
 - **Monthly Reports**: View detailed reports for specific months and years
 - **Pie Charts**: Visualize cost distribution by category
 - **Bar Charts**: View yearly cost trends across all 12 months
-- **Currency Support**: Supports USD, ILS, GBP, and EURO with automatic conversion
+- **Currency Support**: USD, ILS, GBP, and EURO with automatic conversion
+- **Dark/Light Mode**: Toggle between dark and light themes
 - **Settings**: Configure custom URL for exchange rates
 - **Offline Storage**: All data stored locally using IndexedDB
 
 ## Project Structure
 
 ```
-client-side-new/
+cost-manager/
 ├── public/
-│   ├── idb.js              # Vanilla JS version for testing
+│   ├── idb.js              # Vanilla JS IndexedDB library (for testing)
 │   ├── test-idb.html       # Test page for idb.js
-│   └── rates.json          # Example exchange rates file
+│   └── rates.json          # Exchange rates file
 ├── src/
 │   ├── db/
-│   │   └── idb-react.js    # React version of IndexedDB wrapper
+│   │   └── idb-react.js    # React/ES6 module version of IndexedDB library
 │   ├── pages/
 │   │   ├── AddCostPage.jsx
 │   │   ├── MonthlyReportPage.jsx
@@ -40,120 +51,80 @@ client-side-new/
 
 ## Installation
 
-1. Install dependencies:
+1. Clone the repository:
+```bash
+git clone https://github.com/aradlevi8799/client-side-new-arad.git
+```
+
+2. Install dependencies:
 ```bash
 npm install
 ```
 
-2. Run development server:
+3. Run development server:
 ```bash
 npm run dev
 ```
 
-3. Build for production:
+4. Build for production:
 ```bash
 npm run build
 ```
-
-## Deployment
-
-### Step 1: Deploy Exchange Rates JSON
-
-1. Create a `rates.json` file with the following format:
-```json
-{
-  "USD": 1,
-  "GBP": 0.79,
-  "EURO": 0.92,
-  "ILS": 3.65
-}
-```
-
-2. Upload this file to a publicly accessible URL (e.g., GitHub Pages, GitHub raw content, or any static file hosting)
-
-3. Make sure the URL includes CORS headers: `Access-Control-Allow-Origin: *`
-
-4. Update `src/services/CurrencyService.js` with your URL:
-```javascript
-export const DEFAULT_RATES_URL = "https://your-url.com/rates.json";
-```
-
-### Step 2: Deploy the Application
-
-#### Option A: Render.com (Recommended)
-
-1. Create account on [render.com](https://render.com)
-2. Connect your GitHub repository
-3. Create new "Static Site"
-4. Configure:
-   - Build Command: `npm install && npm run build`
-   - Publish Directory: `dist`
-5. Deploy
-
-#### Option B: Netlify
-
-1. Create account on [netlify.com](https://netlify.com)
-2. Connect your GitHub repository
-3. Configure:
-   - Build Command: `npm run build`
-   - Publish Directory: `dist`
-4. Deploy
-
-#### Option C: GitHub Pages
-
-1. Install gh-pages:
-```bash
-npm install --save-dev gh-pages
-```
-
-2. Add to package.json:
-```json
-{
-  "homepage": "https://yourusername.github.io/client-side-new",
-  "scripts": {
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist"
-  }
-}
-```
-
-3. Deploy:
-```bash
-npm run deploy
-```
-
-## Testing idb.js
-
-Open `public/test-idb.html` in a browser to test the vanilla JavaScript version of the idb.js library.
 
 ## Technologies Used
 
 - **React 18** - UI framework
 - **Material-UI (MUI) 7** - Component library
-- **Vite** - Build tool
-- **IndexedDB** - Browser database
-- **Chart.js** - Data visualization
+- **Vite 5** - Build tool
+- **IndexedDB** - Client-side database
+- **Chart.js 4** - Data visualization
 - **React-Chartjs-2** - React wrapper for Chart.js
+
+## idb.js Library
+
+The project includes two versions of the IndexedDB wrapper library:
+
+### Vanilla JS Version (`public/idb.js`)
+- For testing with simple HTML
+- Exposes `idb.openCostsDB()` globally
+- Test with `public/test-idb.html`
+
+### React/ES6 Module Version (`src/db/idb-react.js`)
+- For use in React application
+- Uses ES6 imports/exports
+- Integrates with CurrencyService
+
+### API Methods
+
+```javascript
+// Open database
+const db = await idb.openCostsDB("costsdb", 1);
+
+// Add cost item
+const result = await db.addCost({
+  sum: 200,
+  currency: "USD",
+  category: "FOOD",
+  description: "pizza"
+});
+
+// Get monthly report
+const report = await db.getReport(2025, 1, "USD");
+```
+
+## Supported Currencies
+
+- USD (US Dollar) - Base currency
+- ILS (Israeli Shekel)
+- GBP (British Pound)
+- EURO (Euro)
+
+Exchange rates are fetched from: `https://cost-manager-project-i3wi.onrender.com/rates.json`
 
 ## Code Style
 
 The code follows the style guide at http://www.abelski.com/courses/stylejs/languagerules.pdf
 
-## Requirements Checklist
-
-- ✅ IndexedDB database implementation
-- ✅ Add cost functionality with sum, currency, category, description
-- ✅ Monthly detailed report
-- ✅ Pie chart by category
-- ✅ Bar chart for yearly overview
-- ✅ Currency conversion (USD, ILS, GBP, EURO)
-- ✅ Fetch API for exchange rates
-- ✅ Settings page for custom exchange rates URL
-- ✅ React + MUI implementation
-- ✅ Two versions of idb.js (vanilla and React)
-- ✅ Promise-based API
-- ✅ Proper comments and documentation
-
 ## License
 
-This project is created as a final project for Front-End Development course.
+Final project for Front-End Development course.
